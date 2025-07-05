@@ -73,7 +73,7 @@ const utils = {
 
     // Generate random ID
     generateId() {
-        return Math.random().toString(36).substr(2, 9);
+        return Math.random().toString(36).substring(2, 9);
     },
 
     // Calculate months between dates
@@ -86,39 +86,6 @@ const utils = {
     // Get month key from date
     getMonthKey(date) {
         return new Date(date).toISOString().substring(0, 7);
-    },
-
-    // Calculate trend
-    calculateTrend(current, previous) {
-        if (previous === 0) return { direction: 'neutral', percentage: 0 };
-        
-        const change = ((current - previous) / previous) * 100;
-        return {
-            direction: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-            percentage: Math.abs(change).toFixed(1)
-        };
-    },
-
-    // Validate email
-    isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    },
-
-    // Deep clone object
-    deepClone(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    },
-
-    // Check if element is in viewport
-    isInViewport(element) {
-        const rect = element.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
     },
 
     // Animate number counting
