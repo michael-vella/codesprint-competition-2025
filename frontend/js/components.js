@@ -238,9 +238,11 @@ const components = {
                     Target date: ${utils.formatDate(deadline, 'long')} (${monthsLeft} months left)
                 </div>
                 <div style="margin-top: 15px;">
-                    <button class="btn btn-primary" onclick="components.showAddFundsModal('${goal.id}')">
-                        Add Funds
-                    </button>
+                    ${
+                        goal.currentAmount < goal.targetAmount
+                            ? `<button class="btn btn-primary" onclick="components.showAddFundsModal('${goal.id}')">Add Funds</button>`
+                            : ''
+                    }
                     <button class="btn btn-danger" onclick="components.deleteGoal('${goal.id}')">
                         Delete Goal
                     </button>
@@ -393,20 +395,22 @@ const components = {
     },
 
     // Modal for adding funds to goal
-    showAddFundsModal(goalId) {
+    async showAddFundsModal(goalId) {
         const amount = parseFloat(prompt('Amount to add (€):'));
         if (!amount || amount <= 0) {
             alert('Error: Amount is required. Please enter positive number.');
             return;
         }
+
+        const goal = await api.updateGoalProgress(goalId, amount);
         
-        api.updateGoalProgress(goalId, amount)
-            .then(() => {
-                router.refresh();
-            })
-            .catch(error => {
-                alert('Error updating goal: ' + error.message);
-            });
+        if ((goal.currentAmount / goal.targetAmount) > 1) {
+            alert(`Congratulations! You've reached your goal of €${goal.targetAmount.toFixed(2)}!`);
+        } else if ((goal.currentAmount / goal.targetAmount) > 0.8) {
+            alert(`Congratulations! You're more than 80% of the way to your goal of €${goal.targetAmount.toFixed(2)}! Don't stop... keep saving!`);
+        }
+
+        router.refresh();
     },
 
     // Delete goal
