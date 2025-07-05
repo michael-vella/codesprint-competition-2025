@@ -1,9 +1,7 @@
 // Reusable Components
 const components = {
     // Render summary cards
-    renderSummaryCards(data) {
-        const { expenses, income } = data;
-        
+    renderSummaryCards(expenses, income) {
         const totalIncome = income.reduce((sum, item) => sum + item.amount, 0);
         const totalExpenses = expenses.reduce((sum, item) => sum + item.amount, 0);
         const netSavings = totalIncome - totalExpenses;

@@ -45,7 +45,7 @@
 }
 
 /* Savings Goals */
-.savings-goals {
+.savings_goals {
     display: flex;
     flex-direction: column;
     gap: 15px;

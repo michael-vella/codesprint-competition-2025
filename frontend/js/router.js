@@ -57,34 +57,30 @@ const router = {
         
         switch (route) {
             case 'smart_save':
-                app.innerHTML = this.renderDashboard();
+                app.innerHTML = this.renderDashboardPage();
                 this.initializeDashboard();
                 break;
-                
-            case 'savings_engine':
-                app.innerHTML = await this.renderSavingsEngine();
-                this.initializeSavingsEngine();
+            case 'savings_goals':
+                app.innerHTML = await this.renderSavingsGoalsPage();
+                this.initializeSavingsGoals();
                 break;
                 
             default:
-                app.innerHTML = this.renderDashboard();
+                app.innerHTML = this.renderDashboardPage();
                 this.initializeDashboard();
         }
     },
 
     // Render dashboard page
-    renderDashboard() {
+    renderDashboardPage() {
         const { expenses, income } = this.data;
-        
+
         // Calculate category data
         const categoryData = this.getCategoryData(expenses);
-        
-        // Calculate monthly data
-        // const monthlyData = this.getMonthlyData(expenses, income);
-        
+
         return `
-            ${components.renderSummaryCards(this.data)}
-            
+            ${components.renderSummaryCards(expenses, income)}
+
             ${components.renderAlerts(expenses)}
             
             <div class="dashboard-grid">
@@ -130,11 +126,11 @@ const router = {
         `;
     },
 
-    // Render savings engine page
-    async renderSavingsEngine() {
+    // Render savings goals page
+    async renderSavingsGoalsPage() {
         const goals = await api.getSavingsGoals();
         const { expenses } = this.data;
-        
+
         return `
             <div class="card">
                 <h2>🎯 Savings Goals</h2>
@@ -220,7 +216,7 @@ const router = {
 
     // Calculate discretionary spending (non-essential categories)
     calculateDiscretionarySpending(expenses) {
-        const discretionaryCategories = ['Entertainment', 'Shopping', 'Food & Groceries'];
+        const discretionaryCategories = ['Entertainment', 'Shopping'];
         return expenses
             .filter(exp => discretionaryCategories.includes(exp.category))
             .reduce((sum, exp) => sum + exp.amount, 0) / 3; // Monthly average
@@ -243,8 +239,8 @@ const router = {
         }, 100);
     },
 
-    // Initialize savings engine functionality
-    async initializeSavingsEngine() {
+    // Initialize savings goals functionality
+    async initializeSavingsGoals() {
         const goals = await api.getSavingsGoals();
         
         if (goals.length > 0) {

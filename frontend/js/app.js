@@ -67,7 +67,7 @@ class SmartSaveApp {
         // Alt + 2: Savings Engine
         if (e.altKey && e.key === '2') {
             e.preventDefault();
-            router.navigate('savings_engine');
+            router.navigate('savings_goals');
         }
     }
 
