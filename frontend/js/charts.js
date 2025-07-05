@@ -216,64 +216,6 @@ const charts = {
         });
     },
 
-    // Create category trend chart (spending over time by category)
-    createCategoryTrendChart(canvasId, expensesData) {
-        this.destroy(canvasId);
-        
-        // Group expenses by month and category
-        const monthlyCategories = {};
-        expensesData.forEach(expense => {
-            const month = utils.getMonthKey(expense.date);
-            if (!monthlyCategories[month]) {
-                monthlyCategories[month] = {};
-            }
-            if (!monthlyCategories[month][expense.category]) {
-                monthlyCategories[month][expense.category] = 0;
-            }
-            monthlyCategories[month][expense.category] += expense.amount;
-        });
-
-        const months = Object.keys(monthlyCategories).sort();
-        const categories = [...new Set(expensesData.map(e => e.category))];
-        
-        const datasets = categories.map((category, index) => ({
-            label: category,
-            data: months.map(month => monthlyCategories[month][category] || 0),
-            borderColor: this.colors.categories[index % this.colors.categories.length],
-            backgroundColor: this.colors.categories[index % this.colors.categories.length] + '20',
-            borderWidth: 2,
-            fill: false,
-            tension: 0.4
-        }));
-
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        
-        this.instances[canvasId] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months.map(month => utils.formatDate(month + '-01', 'monthYear')),
-                datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: (value) => utils.formatCurrency(value)
-                        }
-                    }
-                }
-            }
-        });
-    },
-
     // Resize all charts (useful for responsive layouts)
     resizeAll() {
         Object.values(this.instances).forEach(chart => {
