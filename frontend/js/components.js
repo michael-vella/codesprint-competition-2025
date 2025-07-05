@@ -405,9 +405,13 @@ const components = {
         const goal = await api.updateGoalProgress(goalId, amount);
         
         if ((goal.currentAmount / goal.targetAmount) > 1) {
-            alert(`Congratulations! You've reached your goal of €${goal.targetAmount.toFixed(2)}!`);
+            message = `Congratulations! You've reached your savings goal of €${goal.targetAmount.toFixed(2)}!`;
+            api.sendWhatsAppMessage(message);
+            alert(message);
         } else if ((goal.currentAmount / goal.targetAmount) > 0.8) {
-            alert(`Congratulations! You're more than 80% of the way to your goal of €${goal.targetAmount.toFixed(2)}! Don't stop... keep saving!`);
+            message = `You're more than 80% of the way to your goal of €${goal.targetAmount.toFixed(2)}! Keep it up!`;
+            api.sendWhatsAppMessage(message);
+            alert(message);
         }
 
         router.refresh();

@@ -140,5 +140,25 @@ const api = {
         }
         
         throw new Error('Goal not found');
+    },
+
+    // WhatsApp integration
+    async sendWhatsAppMessage(message) {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+        }
+        
+        try {
+            const data = await this.fetch('/send-whatsapp', options);
+            console.log('WhatsApp message sent successfully:', data);
+            return data;
+        } catch (error) {
+            console.error('Error sending WhatsApp message:', error);
+            throw error;
+        }
     }
 };

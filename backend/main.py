@@ -1,10 +1,14 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from helpers import load_csv_data, classify_category
+from mock_whatsapp import MockWhatsAppServer
 
 app = Flask(__name__)
 CORS(app)
+
+whatsapp_server = MockWhatsAppServer()
+whatsapp_server.init("demoUser", "demoPassword") # in production, you would not hardcode credentials like this but retrieve from a secure source
 
 @app.route('/', methods=['GET'])
 def load_csv():
@@ -46,6 +50,17 @@ def get_income():
     
     income = income_data.to_dict(orient='records')
     return jsonify(income=income)
+
+@app.route('/send-whatsapp', methods=['POST'])
+def send_whatsapp_message():
+    data = request.get_json()
+    message = data.get('message')
+
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+
+    response = whatsapp_server.send_message(message)
+    return jsonify({"status": "success", "response": response})
 
 if __name__ == '__main__':
     app.run(debug=True)
