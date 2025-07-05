@@ -80,8 +80,6 @@ const router = {
 
         return `
             ${components.renderSummaryCards(expenses, income)}
-
-            ${components.renderAlerts(expenses)}
             
             <div class="dashboard-grid">
                 <div class="dashboard-left">

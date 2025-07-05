@@ -336,61 +336,6 @@ const components = {
             .map(([service]) => service);
     },
 
-    // Render alerts
-    renderAlerts(expenses) {
-        const alerts = this.generateAlerts(expenses);
-        
-        if (alerts.length === 0) return '';
-
-        return `
-            <div class="alerts">
-                ${alerts.map(alert => `
-                    <div class="alert alert-${alert.type}">
-                        ${alert.message}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    },
-
-    // Generate alerts based on spending patterns
-    generateAlerts(expenses) {
-        const alerts = [];
-        const currentMonth = utils.getMonthKey(new Date());
-        const currentMonthExpenses = expenses.filter(exp => 
-            utils.getMonthKey(exp.date) === currentMonth
-        );
-        
-        const currentMonthTotal = currentMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-        const averageMonthly = expenses.reduce((sum, exp) => sum + exp.amount, 0) / 3;
-        
-        // High spending alert
-        if (currentMonthTotal > averageMonthly * 1.3) {
-            alerts.push({
-                type: 'warning',
-                message: `You've spent ${utils.formatCurrency(currentMonthTotal)} this month, which is 30% higher than your average.`
-            });
-        }
-        
-        // Category-specific alerts
-        const categorySpending = utils.groupBy(currentMonthExpenses, 'category');
-        Object.entries(categorySpending).forEach(([category, transactions]) => {
-            const total = transactions.reduce((sum, t) => sum + t.amount, 0);
-            const avgForCategory = expenses
-                .filter(exp => exp.category === category)
-                .reduce((sum, exp) => sum + exp.amount, 0) / 3;
-            
-            if (total > avgForCategory * 1.5) {
-                alerts.push({
-                    type: 'info',
-                    message: `Your ${category} spending is 50% higher than usual this month.`
-                });
-            }
-        });
-
-        return alerts;
-    },
-
     // Modal for adding savings goal
     showAddGoalModal() {
         // This would typically show a modal - for now, we'll use a simple prompt
