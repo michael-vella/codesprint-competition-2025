@@ -147,7 +147,7 @@ const components = {
         }
 
         return `
-            <div class="savings-goals">
+            <div class="goals">
                 ${goals.map(goal => this.renderSavingsGoal(goal)).join('')}
                 <button class="btn btn-secondary" onclick="components.showAddGoalModal()">
                     Add New Goal
@@ -305,18 +305,6 @@ const components = {
                     impact: 'Review and cancel duplicates to save money.'
                 });
             }
-        }
-
-        // Savings goal recommendations
-        if (goals && goals.length > 0) {
-            const totalGoalAmount = goals.reduce((sum, goal) => sum + (goal.targetAmount - (goal.currentAmount || 0)), 0);
-            const recommendedSavings = monthlyExpenses * 0.2;
-            
-            recommendations.push({
-                title: 'Boost Your Savings',
-                description: `Based on your spending, you could save ${utils.formatCurrency(recommendedSavings)} per month.`,
-                impact: `This would help you reach your goals ${Math.floor(totalGoalAmount / recommendedSavings)} months sooner.`
-            });
         }
 
         return recommendations;

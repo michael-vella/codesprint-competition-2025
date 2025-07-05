@@ -44,8 +44,8 @@
     margin-top: 5px;
 }
 
-/* Savings Goals */
-.savings_goals {
+/* Goals */
+.goals {
     display: flex;
     flex-direction: column;
     gap: 15px;
