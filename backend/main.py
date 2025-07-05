@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 from helpers import load_csv_data, classify_category
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET'])
 def load_csv():

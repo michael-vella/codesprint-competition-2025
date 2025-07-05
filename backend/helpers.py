@@ -27,16 +27,24 @@ def classify_category(description: str) -> str:
     food_keywords = ["mcdonald", "deli", "lidl", "domino", "starbucks"]
     entertainment_keywords = ["bookstore", "concert", "gamestore", "cinema"]
     subscription_keywords = ["spotify", "netflix"]
-    rent_utilities_keywords = ["dpz", "monthlyren"] # assumption: dbz is some form of utilities
-
-    # rule based classification
-    if description.lower() in food_keywords:
+    rent_utilities_keywords = ["dpz", "monthlyren"]  # assumption: dpz is some form of utilities
+    shopping_keywords = ["zara", "amazon", "amzn", "tech store"]
+    transport_keywords = ["parking", "publicparkin", "parkinggar"]
+    
+    description_lower = description.lower()
+    
+    # Check if description contains any of the keywords
+    if any(keyword in description_lower for keyword in food_keywords):
         return "Food & Groceries"
-    elif description.lower() in entertainment_keywords:
+    elif any(keyword in description_lower for keyword in entertainment_keywords):
         return "Entertainment"
-    elif description.lower() in subscription_keywords:
+    elif any(keyword in description_lower for keyword in subscription_keywords):
         return "Subscriptions"
-    elif description.lower() in rent_utilities_keywords:
+    elif any(keyword in description_lower for keyword in rent_utilities_keywords):
         return "Rent & Utilities"
+    elif any(keyword in description_lower for keyword in shopping_keywords):
+        return "Shopping"
+    elif any(keyword in description_lower for keyword in transport_keywords):
+        return "Transport"
     else:
-        return "One-Time Purchases"
+        return "Other"
