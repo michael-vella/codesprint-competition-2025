@@ -406,10 +406,14 @@ const components = {
         
         if ((goal.currentAmount / goal.targetAmount) > 1) {
             message = `Congratulations! You've reached your savings goal of €${goal.targetAmount.toFixed(2)}!`;
+
+            message = message + ` Note this has also been sent to your WhatsApp!`;
             api.sendWhatsAppMessage(message);
             alert(message);
         } else if ((goal.currentAmount / goal.targetAmount) > 0.8) {
             message = `You're more than 80% of the way to your goal of €${goal.targetAmount.toFixed(2)}! Keep it up!`;
+
+            message = message + ` Note this has also been sent to your WhatsApp!`;
             api.sendWhatsAppMessage(message);
             alert(message);
         }
