@@ -80,7 +80,7 @@ const router = {
         const categoryData = this.getCategoryData(expenses);
         
         // Calculate monthly data
-        const monthlyData = this.getMonthlyData(expenses, income);
+        // const monthlyData = this.getMonthlyData(expenses, income);
         
         return `
             ${components.renderSummaryCards(this.data)}
@@ -112,14 +112,6 @@ const router = {
                         <h2>🏷️ Category Breakdown</h2>
                         <div id="category-breakdown">
                             ${components.renderCategoryBreakdown(categoryData)}
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Recommendations -->
-                    <div class="card">
-                        <h2>💡 Smart Recommendations</h2>
-                        <div id="recommendations">
-                            ${components.renderRecommendations(expenses, [])}
                         </div>
                     </div>
                 </div>
