@@ -187,11 +187,8 @@ const components = {
                     <button class="btn btn-primary" onclick="components.showAddFundsModal('${goal.id}')">
                         Add Funds
                     </button>
-                    <button class="btn btn-secondary" onclick="components.editGoal('${goal.id}')">
-                        Edit
-                    </button>
                     <button class="btn btn-danger" onclick="components.deleteGoal('${goal.id}')">
-                        Delete
+                        Delete Goal
                     </button>
                 </div>
             </div>
@@ -398,6 +395,16 @@ const components = {
         this.saveGoal(goal);
     },
 
+    // Save goal
+    async saveGoal(goal) {
+        try {
+            await api.saveSavingsGoal(goal);
+            router.refresh();
+        } catch (error) {
+            alert('Error saving goal: ' + error.message);
+        }
+    },
+
     // Modal for adding funds to goal
     showAddFundsModal(goalId) {
         const amount = parseFloat(prompt('Amount to add (€):'));
@@ -413,22 +420,6 @@ const components = {
             .catch(error => {
                 alert('Error updating goal: ' + error.message);
             });
-    },
-
-    // Save goal
-    async saveGoal(goal) {
-        try {
-            await api.saveSavingsGoal(goal);
-            router.refresh();
-        } catch (error) {
-            alert('Error saving goal: ' + error.message);
-        }
-    },
-
-    // Edit goal
-    editGoal(goalId) {
-        // Implement goal editing functionality
-        console.log('Edit goal:', goalId);
     },
 
     // Delete goal

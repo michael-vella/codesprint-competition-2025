@@ -98,22 +98,24 @@ const api = {
     },
 
     async saveSavingsGoal(goal) {
-        // todo: implement backend endpoint
-        // for now, we will use local storage to simulate saving goals
         const goals = await this.getSavingsGoals();
+
+        const duplicateName = goals.find(g => 
+            g.name.toLowerCase() === goal.name.toLowerCase() && 
+            g.id !== goal.id
+        );
+
+        if (duplicateName) {
+            throw new Error(`A goal with the name "${goal.name}" already exists. Please choose a different name.`);
+        }
+
         const newGoal = {
             ...goal,
             id: goal.id || utils.generateId(),
             createdAt: new Date().toISOString()
         };
         
-        const existingIndex = goals.findIndex(g => g.id === newGoal.id);
-        if (existingIndex >= 0) {
-            goals[existingIndex] = newGoal;
-        } else {
-            goals.push(newGoal);
-        }
-        
+        goals.push(newGoal);
         utils.storage.set('savingsGoals', goals);
         return newGoal;
     },
