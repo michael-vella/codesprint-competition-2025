@@ -69,15 +69,6 @@ class SmartSaveApp {
             e.preventDefault();
             router.navigate('savings_engine');
         }
-
-        // Ctrl/Cmd + K: Focus search
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            const searchInput = document.getElementById('search-filter');
-            if (searchInput) {
-                searchInput.focus();
-            }
-        }
     }
 
     // Handle initialization errors
