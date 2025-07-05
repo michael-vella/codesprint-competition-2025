@@ -190,6 +190,9 @@ const components = {
                     <button class="btn btn-secondary" onclick="components.editGoal('${goal.id}')">
                         Edit
                     </button>
+                    <button class="btn btn-danger" onclick="components.deleteGoal('${goal.id}')">
+                        Delete
+                    </button>
                 </div>
             </div>
         `;
@@ -341,13 +344,48 @@ const components = {
     showAddGoalModal() {
         // This would typically show a modal - for now, we'll use a simple prompt
         const name = prompt('Goal name:');
-        if (!name) return;
+        if (!name) {
+            alert('Error: Goal name is required.');
+            return;
+        }
         
-        const targetAmount = parseFloat(prompt('Target amount (€):'));
-        if (!targetAmount || targetAmount <= 0) return;
+        const targetAmountInput = prompt('Target amount (€):');
+        if (!targetAmountInput) {
+            alert('Error: Target amount is required.');
+            return;
+        }
+
+        const targetAmount = parseFloat(targetAmountInput);
+        if (!targetAmount || targetAmount <= 0) {
+            alert('Error: Target amount must be a positive number.');
+            return;
+        }
         
         const deadline = prompt('Target date (YYYY-MM-DD):');
-        if (!deadline) return;
+        if (!deadline) {
+            alert('Error: Target date is required.');
+            return;
+        }
+        
+        // Validate date format and check if it's in the future
+        const deadlineDate = new Date(deadline);
+        const today = new Date();
+        
+        // Check if date is valid
+        if (isNaN(deadlineDate.getTime())) {
+            alert('Error: Please enter a valid date in YYYY-MM-DD format.');
+            return;
+        }
+        
+        // Set today to start of day for comparison
+        today.setHours(0, 0, 0, 0);
+        deadlineDate.setHours(0, 0, 0, 0);
+        
+        // Check if deadline is in the future
+        if (deadlineDate <= today) {
+            alert('Error: Target date must be in the future.');
+            return;
+        }
         
         const goal = {
             name,
@@ -363,7 +401,10 @@ const components = {
     // Modal for adding funds to goal
     showAddFundsModal(goalId) {
         const amount = parseFloat(prompt('Amount to add (€):'));
-        if (!amount || amount <= 0) return;
+        if (!amount || amount <= 0) {
+            alert('Error: Amount is required. Please enter positive number.');
+            return;
+        }
         
         api.updateGoalProgress(goalId, amount)
             .then(() => {
@@ -388,6 +429,19 @@ const components = {
     editGoal(goalId) {
         // Implement goal editing functionality
         console.log('Edit goal:', goalId);
+    },
+
+    // Delete goal
+    deleteGoal(goalId) {
+        if (!confirm('Are you sure you want to delete this goal?')) return;
+
+        api.deleteSavingsGoal(goalId)
+            .then(() => {
+                router.refresh();
+            })
+            .catch(error => {
+                alert('Error deleting goal: ' + error.message);
+            });
     },
 
     // Animate summary cards

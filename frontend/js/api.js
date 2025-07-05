@@ -94,14 +94,12 @@ const api = {
 
     // Future endpoints for savings goals
     async getSavingsGoals() {
-        // TODO: Implement when backend endpoint is ready
-        // For now, return mock data
         return utils.storage.get('savingsGoals', []);
     },
 
     async saveSavingsGoal(goal) {
-        // TODO: Implement when backend endpoint is ready
-        // For now, save to localStorage
+        // todo: implement backend endpoint
+        // for now, we will use local storage to simulate saving goals
         const goals = await this.getSavingsGoals();
         const newGoal = {
             ...goal,
@@ -121,7 +119,6 @@ const api = {
     },
 
     async deleteSavingsGoal(goalId) {
-        // TODO: Implement when backend endpoint is ready
         const goals = await this.getSavingsGoals();
         const filteredGoals = goals.filter(g => g.id !== goalId);
         utils.storage.set('savingsGoals', filteredGoals);

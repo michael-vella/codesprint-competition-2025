@@ -194,6 +194,15 @@ select:focus, input:focus {
     background: #cbd5e0;
 }
 
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c53030;
+}
+
 /* Progress Bars */
 .progress-bar {
     background: #e2e8f0;
