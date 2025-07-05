@@ -64,7 +64,10 @@ const router = {
                 app.innerHTML = await this.renderSavingsGoalsPage();
                 this.initializeSavingsGoals();
                 break;
-                
+            case 'financial_bot':
+                app.innerHTML = this.renderBotPage();
+                this.initializeBot();
+                break;
             default:
                 app.innerHTML = this.renderDashboardPage();
                 this.initializeDashboard();
@@ -162,6 +165,112 @@ const router = {
                 </div>
             </div>
         `;
+    },
+
+    renderBotPage() {
+        const hasApiKey = !!utils.storage.get('openai_api_key');
+        
+        if (!hasApiKey) {
+            return `
+                <div class="bot-container">
+                    <div class="api-key-setup">
+                        <h3>🤖 Welcome to Your Financial Assistant</h3>
+                        <p>To get started, please enter your OpenAI API key. This will be stored locally in your browser.</p>
+                        <p><small>Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></small></p>
+                        <div>
+                            <input type="password" id="api-key-input" placeholder="Enter your OpenAI API key" />
+                            <br>
+                            <button class="btn btn-primary" onclick="router.saveApiKey()">Save API Key</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="bot-container">
+                <div class="quick-questions">
+                    <h4>💡 Quick Questions</h4>
+                    <div class="quick-question-buttons">
+                        ${bot.getQuickQuestions().map(question => 
+                            `<button class="quick-question" onclick="bot.sendMessage('${question}')">${question}</button>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3>🤖 Financial Assistant</h3>
+                        <p>Ask me anything about your spending patterns and financial data.</p>
+                        <p>NOTE: I only have access to the last 25 transactions and aggregated data of the last 3 months.</p>
+                        <p><strong>WARNING:</strong> Some responses may not be accurate or reflect your current financial situation. I am just a simple bot :(</p>
+                        <button class="btn btn-secondary" onclick="bot.clearHistory()" style="margin-top: 10px; font-size: 0.8rem; padding: 5px 10px;">
+                            Clear History
+                        </button>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be dynamically loaded here -->
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="chat-input">
+                            <input type="text" id="bot-input" placeholder="Ask me about your finances..." />
+                            <button id="send-button">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 2l-7 20-4-9-9-4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 10px;">
+                    <button class="btn btn-secondary" onclick="router.showApiKeyModal()">
+                        Change API Key
+                    </button>
+                </div>
+            </div>
+        `;
+    },
+
+    // Initialize bot functionality
+    initializeBot() {
+        const hasApiKey = !!utils.storage.get('openai_api_key');
+        
+        if (hasApiKey) {
+            bot.init();
+        }
+    },
+
+    // Save API key
+    saveApiKey() {
+        const input = document.getElementById('api-key-input');
+        const apiKey = input?.value.trim();
+        
+        if (!apiKey) {
+            alert('Please enter a valid API key');
+            return;
+        }
+        
+        if (!apiKey.startsWith('sk-')) {
+            alert('Invalid API key format. OpenAI API keys start with "sk-"');
+            return;
+        }
+        
+        utils.storage.set('openai_api_key', apiKey);
+        this.renderPage('financial_bot');
+    },
+
+    // Show API key change modal
+    showApiKeyModal() {
+        const newKey = prompt('Enter your new OpenAI API key:');
+        if (newKey && newKey.startsWith('sk-')) {
+            utils.storage.set('openai_api_key', newKey);
+            alert('API key updated successfully!');
+        } else if (newKey) {
+            alert('Invalid API key format. OpenAI API keys start with "sk-"');
+        }
     },
 
     // Initialize dashboard functionality
