@@ -5,7 +5,7 @@ const components = {
         const totalIncome = income.reduce((sum, item) => sum + item.amount, 0);
         const totalExpenses = expenses.reduce((sum, item) => sum + item.amount, 0);
         const netSavings = totalIncome - totalExpenses;
-        const monthlyAverage = totalExpenses / 3; // Assuming 3 months of data
+        const monthlyAverage = totalExpenses / 3;
 
         return `
             <div class="summary-cards">
@@ -154,6 +154,62 @@ const components = {
                 </button>
             </div>
         `;
+    },
+
+    // Render savings analysis
+    renderSavingsAnalysis(expenses) {
+        const monthlyExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0) / 3;
+        const discretionarySpendingCategories = ['Entertainment', 'Shopping'];
+        const discretionarySpending = this.calculateDiscretionarySpending(expenses, discretionarySpendingCategories);
+        
+        const conservative = discretionarySpending * 0.15;
+        const moderate = discretionarySpending * 0.25;
+        const aggressive = discretionarySpending * 0.35;
+
+        return `
+            <div class="savings-scenarios">
+                <p style="margin-bottom: 20px; color: #4a5568;">
+                    Based on your spending patterns, here's how much you could potentially save each month by reducing discretionary spending (non-essential categories which include ${discretionarySpendingCategories.join(', ')}):
+                </p>
+                
+                <div class="scenario-card" style="background: #f0fff4; border-left: 4px solid #38a169; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <h4 style="color: #2f855a; margin-bottom: 8px;">Conservative Approach</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #2f855a;">${utils.formatCurrency(conservative)}/month</div>
+                    <p style="font-size: 0.9rem; color: #4a5568; margin-top: 5px;">Reduce discretionary spending by 15%</p>
+                </div>
+
+                <div class="scenario-card" style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <h4 style="color: #d69e2e; margin-bottom: 8px;">Moderate Approach</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #d69e2e;">${utils.formatCurrency(moderate)}/month</div>
+                    <p style="font-size: 0.9rem; color: #4a5568; margin-top: 5px;">Reduce discretionary spending by 25%</p>
+                </div>
+
+                <div class="scenario-card" style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                    <h4 style="color: #dc2626; margin-bottom: 8px;">Aggressive Approach</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #dc2626;">${utils.formatCurrency(aggressive)}/month</div>
+                    <p style="font-size: 0.9rem; color: #4a5568; margin-top: 5px;">Reduce discretionary spending by 35%</p>
+                </div>
+
+                <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <h4 style="color: #2c7a7b; margin-bottom: 10px;">Your Current Spending Breakdown:</h4>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Monthly Expenses:</span>
+                        <strong>${utils.formatCurrency(monthlyExpenses)}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Discretionary Spending:</span>
+                        <strong>${utils.formatCurrency(discretionarySpending)}</strong>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Calculate discretionary spending (non-essential categories)
+    calculateDiscretionarySpending(expenses, discretionaryCategories) {
+        return expenses
+            .filter(exp => discretionaryCategories.includes(exp.category))
+            .reduce((sum, exp) => sum + exp.amount, 0) / 3; // Monthly average
     },
 
     // Render individual savings goal
